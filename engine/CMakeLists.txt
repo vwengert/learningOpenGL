@@ -6,6 +6,7 @@ set(CMAKE_EXTENSIONS OFF)
 
 list(APPEND Library_SOURCES
         src/openGL.cpp
+        src/shader.cpp
 )
 
 add_library(${PROJECT_NAME} STATIC
