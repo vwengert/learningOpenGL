@@ -1,10 +1,23 @@
 #ifndef LEARNOPENGL_SHADER_H
 #define LEARNOPENGL_SHADER_H
 
+#include <glad/glad.h>
+#include <memory>
+
 class Shader
 {
   public:
-    Shader();
+    explicit Shader( const char* vertexShaderSource, const char* fragmentShaderSource );
+    ~Shader();
+
+    void useShaderProgram();
+
+  private:
+    static unsigned int createAndCompileShader( const char* shaderGLSL, unsigned int shaderType );
+    void createShaderProgram( unsigned int vertexShader, unsigned int fragmentShader );
+
+    class PrivateData;
+    std::unique_ptr< PrivateData > m_data;
 };
 
 #endif // LEARNOPENGL_SHADER_H

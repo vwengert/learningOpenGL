@@ -11,6 +11,8 @@ list(APPEND Library_SOURCES
 
 add_library(${PROJECT_NAME} STATIC
         ${Library_SOURCES}
+        src/window.cpp
+        include/window.h
 )
 
 target_include_directories(${PROJECT_NAME} PUBLIC
