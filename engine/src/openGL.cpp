@@ -1,48 +1,21 @@
 #include "openGL.h"
 #include "shader.h"
-#include <iostream>
-
-namespace
-{
-  void frameBufferSizeCallback( GLFWwindow*, int width, int height )
-  {
-    glViewport( 0, 0, width, height );
-  }
-}
+#include "window.h"
 
 class OpenGL::PrivateData
 {
   public:
-    GLFWwindow* window{ nullptr };
     unsigned int VAO{ 0 };
     unsigned int VBO{ 0 };
     unsigned int EBO{ 0 };
+    std::unique_ptr< Window > window;
     std::unique_ptr< Shader > shaderProgram;
 };
 
 OpenGL::OpenGL( int width, int height, const char* title )
   : m_data( new PrivateData() )
 {
-  glfwInit();
-  glfwWindowHint( GLFW_CONTEXT_VERSION_MAJOR, 3 );
-  glfwWindowHint( GLFW_CONTEXT_VERSION_MINOR, 3 );
-  glfwWindowHint( GLFW_OPENGL_PROFILE, GLFW_OPENGL_CORE_PROFILE );
-
-  m_data->window = glfwCreateWindow( width, height, title, nullptr, nullptr );
-  if( m_data->window == nullptr )
-  {
-    std::cout << "Failed to create GLFW window" << std::endl;
-    throw;
-  }
-
-  glfwMakeContextCurrent( m_data->window );
-  if( !gladLoadGLLoader( ( GLADloadproc ) glfwGetProcAddress ) )
-  {
-    std::cout << "Failed to initialize GLAD" << std::endl;
-    throw;
-  }
-
-  glfwSetFramebufferSizeCallback( m_data->window, frameBufferSizeCallback );
+  m_data->window = std::make_unique< Window >( width, height, title, nullptr, nullptr );
 }
 
 OpenGL::~OpenGL()
@@ -54,7 +27,7 @@ OpenGL::~OpenGL()
 
 GLFWwindow* OpenGL::window()
 {
-  return m_data->window;
+  return m_data->window->window();
 }
 
 void OpenGL::setBackgroundColor( GLfloat red, GLfloat green, GLfloat blue, GLfloat alpha )
@@ -87,9 +60,9 @@ void OpenGL::prepareIndices( unsigned int* indices, long long int size )
 
 void OpenGL::processInput()
 {
-  if( glfwGetKey( m_data->window, GLFW_KEY_ESCAPE ) == GLFW_PRESS )
+  if( glfwGetKey( m_data->window->window(), GLFW_KEY_ESCAPE ) == GLFW_PRESS )
   {
-    glfwSetWindowShouldClose( m_data->window, true );
+    glfwSetWindowShouldClose( m_data->window->window(), true );
   }
 }
 
@@ -118,7 +91,7 @@ void OpenGL::drawVertices() const
   ++x;
   glDrawElements( GL_TRIANGLES, 6, GL_UNSIGNED_INT, 0 );
   glBindVertexArray( 0 );
-  glfwSwapBuffers( m_data->window );
+  glfwSwapBuffers( m_data->window->window() );
 }
 
 void OpenGL::createShader( const char* vertexShaderSource, const char* fragmentShaderSource )

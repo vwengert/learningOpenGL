@@ -7,12 +7,11 @@ set(CMAKE_EXTENSIONS OFF)
 list(APPEND Library_SOURCES
         src/openGL.cpp
         src/shader.cpp
+        src/window.cpp
 )
 
 add_library(${PROJECT_NAME} STATIC
         ${Library_SOURCES}
-        src/window.cpp
-        include/window.h
 )
 
 target_include_directories(${PROJECT_NAME} PUBLIC
