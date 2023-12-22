@@ -47,8 +47,10 @@ void OpenGL::prepareVertices( float* vertices, long long size )
   glBindBuffer( GL_ARRAY_BUFFER, m_data->VBO );
   glBufferData( GL_ARRAY_BUFFER, size, vertices, GL_STATIC_DRAW );
 
-  glVertexAttribPointer( 0, 3, GL_FLOAT, GL_FALSE, 3 * sizeof( float ), ( void* ) 0 );
+  glVertexAttribPointer( 0, 3, GL_FLOAT, GL_FALSE, 6 * sizeof( float ), ( void* ) 0 );
   glEnableVertexAttribArray( 0 );
+  glVertexAttribPointer( 1, 3, GL_FLOAT, GL_FALSE, 6 * sizeof( float ), ( void* ) ( 3 * sizeof( float ) ) );
+  glEnableVertexAttribArray( 1 );
 }
 
 void OpenGL::prepareIndices( unsigned int* indices, long long int size )
@@ -74,26 +76,9 @@ void OpenGL::pollEvents()
 
 void OpenGL::drawVertices() const
 {
-  auto timeValue = glfwGetTime();
-  auto greenValue = ( sin( timeValue ) / 2.0f ) + 0.5f;
-  int vertexColorLocation = m_data->shaderProgram->getUniformLocation( "ourColor" );
   m_data->shaderProgram->useShaderProgram();
-  glUniform4f( vertexColorLocation, 0.0f, GLfloat( greenValue ), 0.0f, 1.0f );
   glBindVertexArray( m_data->VAO );
-  static int x = 0;
-  if( x > 40 )
-  {
-    glPolygonMode( GL_FRONT_AND_BACK, GL_LINE );
-  }
-  else
-  {
-    glPolygonMode( GL_FRONT_AND_BACK, GL_FILL );
-  }
-  if( x > 80 )
-  {
-    x = 0;
-  }
-  ++x;
+  glPolygonMode( GL_FRONT_AND_BACK, GL_FILL );
   glDrawElements( GL_TRIANGLES, 6, GL_UNSIGNED_INT, 0 );
   glBindVertexArray( 0 );
   glfwSwapBuffers( m_data->window->handle() );

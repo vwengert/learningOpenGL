@@ -20,7 +20,7 @@ class OpenGL
     static void setBackgroundColor( GLfloat red, GLfloat green, GLfloat blue, GLfloat alpha );
     static void pollEvents();
     void prepareVertices( float* vertices, long long size );
-    void prepareIndices( unsigned int* indices, long long size );
+    [[maybe_unused]] void prepareIndices( unsigned int* indices, long long size );
     void drawVertices() const;
     void processInput();
     GLFWwindow* window();
