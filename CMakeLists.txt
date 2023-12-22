@@ -22,7 +22,6 @@ message(STATUS "Build type: ${CMAKE_BUILD_TYPE}")
 
 add_executable(${PROJECT_NAME} main.cpp)
 
-
 FetchContent_MakeAvailable(
         glfw)
 
@@ -39,4 +38,7 @@ if (WIN32)
     target_link_options(${PROJECT_NAME} PRIVATE -static-libgcc -static-libstdc++)
 endif (WIN32)
 
+add_custom_command(TARGET ${PROJECT_NAME} POST_BUILD
+        COMMAND ${CMAKE_COMMAND} -E copy_directory
+        ${CMAKE_SOURCE_DIR}/resource/ $<TARGET_FILE_DIR:${PROJECT_NAME}>/resource/)
 

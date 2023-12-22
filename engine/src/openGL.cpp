@@ -76,7 +76,7 @@ void OpenGL::pollEvents()
 
 void OpenGL::drawVertices() const
 {
-  m_data->shaderProgram->useShaderProgram();
+  m_data->shaderProgram->use();
   glBindVertexArray( m_data->VAO );
   glPolygonMode( GL_FRONT_AND_BACK, GL_FILL );
   glDrawElements( GL_TRIANGLES, 6, GL_UNSIGNED_INT, 0 );
@@ -84,7 +84,7 @@ void OpenGL::drawVertices() const
   glfwSwapBuffers( m_data->window->handle() );
 }
 
-void OpenGL::createShader( const char* vertexShaderSource, const char* fragmentShaderSource )
+void OpenGL::createShader( const char* vertexPath, const char* fragmentPath )
 {
-  m_data->shaderProgram = std::make_unique< Shader >( vertexShaderSource, fragmentShaderSource );
+  m_data->shaderProgram = std::make_unique< Shader >( vertexPath, fragmentPath );
 }

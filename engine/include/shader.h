@@ -7,10 +7,13 @@
 class Shader
 {
   public:
-    explicit Shader( const char* vertexShaderSource, const char* fragmentShaderSource );
+    explicit Shader( const char* vertexPath, const char* fragmentPath );
     ~Shader();
 
-    void useShaderProgram();
+    void use();
+    void setBool( const std::string& name, bool value ) const;
+    void setInt( const std::string& name, int value ) const;
+    void setFloat( const std::string& name, float value ) const;
     int getUniformLocation( const char* uniformValue );
 
   private:
