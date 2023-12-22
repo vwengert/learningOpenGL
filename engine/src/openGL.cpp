@@ -1,6 +1,7 @@
 #include "openGL.h"
 #include "shader.h"
 #include "window.h"
+#include <valarray>
 
 class OpenGL::PrivateData
 {
@@ -27,7 +28,7 @@ OpenGL::~OpenGL()
 
 GLFWwindow* OpenGL::window()
 {
-  return m_data->window->window();
+  return m_data->window->handle();
 }
 
 void OpenGL::setBackgroundColor( GLfloat red, GLfloat green, GLfloat blue, GLfloat alpha )
@@ -60,9 +61,9 @@ void OpenGL::prepareIndices( unsigned int* indices, long long int size )
 
 void OpenGL::processInput()
 {
-  if( glfwGetKey( m_data->window->window(), GLFW_KEY_ESCAPE ) == GLFW_PRESS )
+  if( glfwGetKey( m_data->window->handle(), GLFW_KEY_ESCAPE ) == GLFW_PRESS )
   {
-    glfwSetWindowShouldClose( m_data->window->window(), true );
+    glfwSetWindowShouldClose( m_data->window->handle(), true );
   }
 }
 
@@ -73,7 +74,11 @@ void OpenGL::pollEvents()
 
 void OpenGL::drawVertices() const
 {
+  auto timeValue = glfwGetTime();
+  auto greenValue = ( sin( timeValue ) / 2.0f ) + 0.5f;
+  int vertexColorLocation = m_data->shaderProgram->getUniformLocation( "ourColor" );
   m_data->shaderProgram->useShaderProgram();
+  glUniform4f( vertexColorLocation, 0.0f, GLfloat( greenValue ), 0.0f, 1.0f );
   glBindVertexArray( m_data->VAO );
   static int x = 0;
   if( x > 40 )
@@ -91,7 +96,7 @@ void OpenGL::drawVertices() const
   ++x;
   glDrawElements( GL_TRIANGLES, 6, GL_UNSIGNED_INT, 0 );
   glBindVertexArray( 0 );
-  glfwSwapBuffers( m_data->window->window() );
+  glfwSwapBuffers( m_data->window->handle() );
 }
 
 void OpenGL::createShader( const char* vertexShaderSource, const char* fragmentShaderSource )

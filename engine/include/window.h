@@ -13,7 +13,7 @@ class Window
     explicit Window( int width, int height, const char* title, GLFWmonitor* monitor, GLFWwindow* share );
     ~Window();
 
-    GLFWwindow* window();
+    GLFWwindow* handle();
 
   private:
     class PrivateData;

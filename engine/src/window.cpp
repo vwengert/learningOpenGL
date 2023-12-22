@@ -46,7 +46,7 @@ Window::~Window()
   glfwDestroyWindow( m_data->window );
 }
 
-GLFWwindow* Window::window()
+GLFWwindow* Window::handle()
 {
   return m_data->window;
 }

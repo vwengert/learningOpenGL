@@ -11,6 +11,7 @@ class Shader
     ~Shader();
 
     void useShaderProgram();
+    int getUniformLocation( const char* uniformValue );
 
   private:
     static unsigned int createAndCompileShader( const char* shaderGLSL, unsigned int shaderType );

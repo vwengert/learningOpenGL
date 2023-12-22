@@ -70,3 +70,7 @@ void Shader::useShaderProgram()
   assert( m_data->shaderProgram != 0 );
   glUseProgram( m_data->shaderProgram );
 }
+int Shader::getUniformLocation( const char* uniformValue )
+{
+  return glGetUniformLocation( m_data->shaderProgram, uniformValue );
+}
