@@ -22,7 +22,6 @@ namespace
     {
       std::cout << "ERROR::SHADER::FILE_NOT_SUCCESSFULLY_READ" << std::endl;
     }
-    std::cout << shaderStream.str().c_str();
     return shaderStream.str();
   }
 }
