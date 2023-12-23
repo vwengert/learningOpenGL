@@ -44,6 +44,7 @@ Window::Window( int width, int height, const char* title, GLFWmonitor* monitor, 
 Window::~Window()
 {
   glfwDestroyWindow( m_data->window );
+  glfwTerminate();
 }
 
 GLFWwindow* Window::handle()

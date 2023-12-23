@@ -23,7 +23,6 @@ OpenGL::~OpenGL()
 {
   glDeleteVertexArrays( 1, &m_data->VAO );
   glDeleteBuffers( 1, &m_data->VBO );
-  glfwTerminate();
 }
 
 GLFWwindow* OpenGL::window()
