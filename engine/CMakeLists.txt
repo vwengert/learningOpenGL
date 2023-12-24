@@ -8,6 +8,7 @@ list(APPEND Library_SOURCES
         src/openGL.cpp
         src/shader.cpp
         src/window.cpp
+        src/texture.cpp
 )
 
 add_library(${PROJECT_NAME} STATIC

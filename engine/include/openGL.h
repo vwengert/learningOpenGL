@@ -17,6 +17,7 @@ class OpenGL
     ~OpenGL();
 
     void createShader( const char* vertexShaderSource, const char* fragmentShaderSource );
+    void createTexture( const char* texturePath );
     static void setBackgroundColor( GLfloat red, GLfloat green, GLfloat blue, GLfloat alpha );
     static void pollEvents();
     void prepareVertices( float* vertices, long long size );

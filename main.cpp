@@ -4,11 +4,12 @@ auto main() -> int
 {
   OpenGL engine( 800, 600, "modern C++" );
   engine.createShader( "resource/vertex.shader", "resource/fragment.shader" );
+  engine.createTexture( "resource/pfote.png" );
 
-  float vertices[] = { -0.5f, -0.5f, 0.0f, 1.0f, 0.0f, 0.0f, 0.5f, -0.5f, 0.0f, 0.0f, 1.0f, 0.0f, 0.5f, 0.5f, 0.0f,
-    0.0f, 0.0f, 1.0f, -0.5f, 0.5f, 0.0f, 0.0f, 0.0f, 0.5f };
+  float vertices[] = { 0.5f, 0.5f, 0.0f, 1.0f, 0.0f, 0.0f, 1.0f, 1.0f, 0.5f, -0.5f, 0.0f, 0.0f, 1.0f, 0.0f, 1.0f, 0.0f,
+    -0.5f, -0.5f, 0.0f, 0.0f, 0.0f, 1.0f, 0.0f, 0.0f, -0.5f, 0.5f, 0.0f, 1.0f, 1.0f, 0.0f, 0.0f, 1.0f };
 
-  unsigned int indices[] = { 0, 1, 2, 0, 2, 3 };
+  unsigned int indices[] = { 0, 1, 3, 1, 2, 3 };
 
   engine.prepareVertices( vertices, sizeof vertices );
   engine.prepareIndices( indices, sizeof indices );
