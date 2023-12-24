@@ -10,15 +10,11 @@ class Shader
     explicit Shader( const char* vertexPath, const char* fragmentPath );
     ~Shader();
 
-    void use();
-    void setBool( const std::string& name, bool value ) const;
-    void setInt( const std::string& name, int value ) const;
-    void setFloat( const std::string& name, float value ) const;
-    int getUniformLocation( const char* uniformValue );
-
-  private:
-    static unsigned int createAndCompileShader( const char* shaderGLSL, unsigned int shaderType );
-    void createShaderProgram( unsigned int vertexShader, unsigned int fragmentShader );
+    void use() const;
+    [[maybe_unused]] void setBool( const std::string& name, bool value ) const;
+    [[maybe_unused]] void setInt( const std::string& name, int value ) const;
+    [[maybe_unused]] void setFloat( const std::string& name, float value ) const;
+    [[maybe_unused]] int getUniformLocation( const char* uniformValue ) const;
 
     class PrivateData;
     std::unique_ptr< PrivateData > m_data;

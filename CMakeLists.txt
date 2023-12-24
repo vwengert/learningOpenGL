@@ -1,5 +1,5 @@
 cmake_minimum_required(VERSION 3.27)
-project(learnOpenGL)
+project(learningOpenGL)
 
 include(FetchContent)
 FetchContent_Declare(glfw
