@@ -38,7 +38,10 @@ if (WIN32)
     target_link_options(${PROJECT_NAME} PRIVATE -static-libgcc -static-libstdc++)
 endif (WIN32)
 
-add_custom_command(TARGET ${PROJECT_NAME} POST_BUILD
+add_custom_target(copy_resources ALL
         COMMAND ${CMAKE_COMMAND} -E copy_directory
-        ${CMAKE_SOURCE_DIR}/resource/ $<TARGET_FILE_DIR:${PROJECT_NAME}>/resource/)
+        ${PROJECT_SOURCE_DIR}/resource
+        ${PROJECT_BINARY_DIR}/resource
+        COMMENT "Copying resources into binary directory")
 
+add_dependencies(${PROJECT_NAME} copy_resources)
