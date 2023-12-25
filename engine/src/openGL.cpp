@@ -25,6 +25,7 @@ OpenGL::~OpenGL()
 {
   glDeleteVertexArrays( 1, &m_data->VAO );
   glDeleteBuffers( 1, &m_data->VBO );
+  glDeleteBuffers( 1, &m_data->EBO );
 }
 
 GLFWwindow* OpenGL::window()
@@ -98,6 +99,7 @@ void OpenGL::createShader( const char* vertexPath, const char* fragmentPath )
 {
   m_data->shaderProgram = std::make_unique< Shader >( vertexPath, fragmentPath );
 }
+
 void OpenGL::createTexture( const char* texturePath )
 {
   m_data->texture = std::make_unique< Texture >( texturePath );
