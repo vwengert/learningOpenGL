@@ -2,9 +2,15 @@ cmake_minimum_required(VERSION 3.27)
 project(learningOpenGL)
 
 include(FetchContent)
+
 FetchContent_Declare(glfw
         GIT_REPOSITORY https://github.com/glfw/glfw.git
         GIT_TAG 3.3.8)
+
+FetchContent_Declare(glm
+        GIT_REPOSITORY https://github.com/g-truc/glm
+        GIT_TAG 0.9.9.8)
+
 
 set(CMAKE_CXX_STANDARD 17)
 set(CMAKE_CXX_STANDARD_REQUIRED ON)
@@ -25,10 +31,15 @@ add_executable(${PROJECT_NAME} main.cpp)
 FetchContent_MakeAvailable(
         glfw)
 
+FetchContent_MakeAvailable(
+        glm)
+
+
 set(LINK_LIBRARY
         engine
         glad
-        glfw)
+        glfw
+        glm)
 
 target_link_libraries(${PROJECT_NAME} PRIVATE
         ${LINK_LIBRARY})

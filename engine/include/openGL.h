@@ -5,6 +5,7 @@
 
 #include <GLFW/glfw3.h>
 
+#include <glm/glm.hpp>
 #include <memory>
 #include <vector>
 
@@ -22,7 +23,7 @@ class OpenGL
     static void pollEvents();
     void prepareVertices( float* vertices, long long size );
     [[maybe_unused]] void prepareIndices( unsigned int* indices, long long size );
-    void drawVertices() const;
+    void drawVertices( glm::mat4 transform ) const;
     void processInput();
     GLFWwindow* window();
 

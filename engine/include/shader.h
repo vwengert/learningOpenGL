@@ -2,6 +2,7 @@
 #define LEARNOPENGL_SHADER_H
 
 #include <glad/glad.h>
+#include <glm/glm.hpp>
 #include <memory>
 
 class Shader
@@ -10,7 +11,7 @@ class Shader
     explicit Shader( const char* vertexPath, const char* fragmentPath );
     ~Shader();
 
-    void use() const;
+    void use( glm::mat4 transform ) const;
     [[maybe_unused]] void setBool( const std::string& name, bool value ) const;
     [[maybe_unused]] void setInt( const std::string& name, int value ) const;
     [[maybe_unused]] void setFloat( const std::string& name, float value ) const;

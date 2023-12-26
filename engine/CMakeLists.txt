@@ -22,6 +22,7 @@ target_include_directories(${PROJECT_NAME} PUBLIC
 SET(LINK_LIBRARY
         glad
         glfw
+        glm
 )
 
 target_link_libraries(${PROJECT_NAME} PRIVATE

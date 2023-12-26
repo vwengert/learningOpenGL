@@ -66,7 +66,6 @@ void OpenGL::prepareVertices( float* vertices, long long size )
 void OpenGL::prepareIndices( unsigned int* indices, long long int size )
 {
   glGenBuffers( 1, &m_data->EBO );
-
   glBindBuffer( GL_ELEMENT_ARRAY_BUFFER, m_data->EBO );
   glBufferData( GL_ELEMENT_ARRAY_BUFFER, size, indices, GL_STATIC_DRAW );
 }
@@ -84,10 +83,10 @@ void OpenGL::pollEvents()
   glfwPollEvents();
 }
 
-void OpenGL::drawVertices() const
+void OpenGL::drawVertices( glm::mat4 transform ) const
 {
   m_data->texture->use();
-  m_data->shaderProgram->use();
+  m_data->shaderProgram->use( transform );
   glBindVertexArray( m_data->VAO );
   glPolygonMode( GL_FRONT_AND_BACK, GL_FILL );
   glDrawElements( GL_TRIANGLES, 6, GL_UNSIGNED_INT, 0 );

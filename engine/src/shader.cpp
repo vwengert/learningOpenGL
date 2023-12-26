@@ -2,6 +2,7 @@
 
 #include <cassert>
 #include <fstream>
+#include <glm/gtc/type_ptr.hpp>
 #include <iostream>
 #include <sstream>
 
@@ -79,8 +80,9 @@ class Shader::PrivateData
 Shader::Shader( const char* vertexPath, const char* fragmentPath )
   : m_data{ new PrivateData() }
 {
-  m_data->shaderProgram = createShaderProgram( createAndCompileShader( readShaderCode( vertexPath ).c_str(), GL_VERTEX_SHADER ),
-    createAndCompileShader( readShaderCode( fragmentPath ).c_str(), GL_FRAGMENT_SHADER ) );
+  m_data->shaderProgram =
+    createShaderProgram( createAndCompileShader( readShaderCode( vertexPath ).c_str(), GL_VERTEX_SHADER ),
+      createAndCompileShader( readShaderCode( fragmentPath ).c_str(), GL_FRAGMENT_SHADER ) );
 }
 
 Shader::~Shader()
@@ -91,8 +93,10 @@ Shader::~Shader()
   }
 }
 
-void Shader::use() const
+void Shader::use( glm::mat4 transform ) const
 {
+  GLint transformLoc = glGetUniformLocation( m_data->shaderProgram, "transform" );
+  glUniformMatrix4fv( transformLoc, 1, GL_FALSE, glm::value_ptr( transform ) );
   assert( m_data->shaderProgram != 0 );
   glUseProgram( m_data->shaderProgram );
 }
