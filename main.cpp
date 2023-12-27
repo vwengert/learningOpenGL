@@ -3,13 +3,16 @@
 #include <openGL.h>
 
 void processInput( GLFWwindow* window );
-void mouseCallback( GLFWwindow* window, double xpos, double ypos );
+void mouseCallback( GLFWwindow* window, double xPos, double yPos );
+void scrollCallback( GLFWwindow* window, double xOffset, double yOffset );
 
 glm::vec3 cameraPos = glm::vec3( 0.0f, 0.0f, 3.0f );
 glm::vec3 cameraFront = glm::vec3( 0.0f, 0.0f, -1.0f );
 glm::vec3 cameraUp = glm::vec3( 0.0f, 1.0f, 0.0f );
 float yaw = 0.0f;
 float pitch = 0.0f;
+float zoom = 1.0f;
+bool firstMouse = true;
 
 auto main() -> int
 {
@@ -65,6 +68,7 @@ auto main() -> int
   engine.prepareIndices( indices, sizeof indices );
   glfwSetInputMode( engine.window(), GLFW_CURSOR, GLFW_CURSOR_DISABLED );
   glfwSetCursorPosCallback( engine.window(), mouseCallback );
+  glfwSetScrollCallback( engine.window(), scrollCallback );
 
   while( !glfwWindowShouldClose( engine.window() ) )
   {
@@ -81,7 +85,7 @@ auto main() -> int
     cameraFront = glm::normalize( direction );
 
     view = glm::lookAt( cameraPos, cameraPos + cameraFront, cameraUp );
-    projection = glm::perspective( glm::radians( 45.0f ), ( float ) width / ( float ) height, 0.1f, 100.0f );
+    projection = glm::perspective( glm::radians( zoom ), ( float ) width / ( float ) height, 0.1f, 100.0f );
 
     for( unsigned int i = 0; i < 10; ++i )
     {
@@ -130,18 +134,25 @@ void processInput( GLFWwindow* window )
   }
 }
 
-void mouseCallback( GLFWwindow* window, double xpos, double ypos )
+void mouseCallback( GLFWwindow* window, double xPos, double yPos )
 {
-  static float lastX = 400, lastY = 300;
-  float xoffset = ( float ) xpos - lastX;
-  float yoffset = ( float ) ypos - lastY;
-  lastX = xpos;
-  lastY = ypos;
+  static float lastX, lastY;
+  if( firstMouse )
+  {
+    lastX = ( float ) xPos;
+    lastY = ( float ) yPos;
+    firstMouse = false;
+    return;
+  }
+  auto xOffset = ( float ) xPos - lastX;
+  auto yOffset = ( float ) yPos - lastY;
+  lastX = ( float ) xPos;
+  lastY = ( float ) yPos;
   const float sensitivity = 0.1f;
-  xoffset *= sensitivity;
-  yoffset *= sensitivity;
-  yaw += xoffset;
-  pitch += yoffset;
+  xOffset *= sensitivity;
+  yOffset *= sensitivity;
+  yaw += xOffset;
+  pitch += yOffset;
   if( pitch > 89.0f )
   {
     pitch = 89.0f;
@@ -149,5 +160,18 @@ void mouseCallback( GLFWwindow* window, double xpos, double ypos )
   if( pitch < -89.0f )
   {
     pitch - 89.0f;
+  }
+}
+
+void scrollCallback( GLFWwindow* window, double xOffset, double yOffset )
+{
+  zoom -= ( float ) yOffset;
+  if( zoom < 1.0f )
+  {
+    zoom = 1.0f;
+  }
+  if( zoom > 45.0f )
+  {
+    zoom = 45.0f;
   }
 }
