@@ -3,10 +3,13 @@
 #include <openGL.h>
 
 void processInput( GLFWwindow* window );
+void mouseCallback( GLFWwindow* window, double xpos, double ypos );
 
 glm::vec3 cameraPos = glm::vec3( 0.0f, 0.0f, 3.0f );
 glm::vec3 cameraFront = glm::vec3( 0.0f, 0.0f, -1.0f );
 glm::vec3 cameraUp = glm::vec3( 0.0f, 1.0f, 0.0f );
+float yaw = 0.0f;
+float pitch = 0.0f;
 
 auto main() -> int
 {
@@ -60,6 +63,8 @@ auto main() -> int
 
   engine.prepareVertices( vertices, sizeof vertices );
   engine.prepareIndices( indices, sizeof indices );
+  glfwSetInputMode( engine.window(), GLFW_CURSOR, GLFW_CURSOR_DISABLED );
+  glfwSetCursorPosCallback( engine.window(), mouseCallback );
 
   while( !glfwWindowShouldClose( engine.window() ) )
   {
@@ -68,6 +73,12 @@ auto main() -> int
 
     glm::mat4 view = glm::mat4( 1.0f );
     glm::mat4 projection = glm::mat4( 1.0f );
+
+    glm::vec3 direction;
+    direction.x = ( float ) ( cos( glm::radians( yaw ) ) * cos( glm::radians( pitch ) ) );
+    direction.y = ( float ) ( sin( glm::radians( pitch ) ) );
+    direction.z = ( float ) ( sin( glm::radians( yaw ) ) * cos( glm::radians( pitch ) ) );
+    cameraFront = glm::normalize( direction );
 
     view = glm::lookAt( cameraPos, cameraPos + cameraFront, cameraUp );
     projection = glm::perspective( glm::radians( 45.0f ), ( float ) width / ( float ) height, 0.1f, 100.0f );
@@ -90,26 +101,53 @@ auto main() -> int
 
 void processInput( GLFWwindow* window )
 {
+  static float deltaTime = 0.0f;
+  static float lastFrame = 0.0f;
+  auto currentFrame = ( float ) glfwGetTime();
+  deltaTime = currentFrame - lastFrame;
+  lastFrame = currentFrame;
   if( glfwGetKey( window, GLFW_KEY_ESCAPE ) == GLFW_PRESS )
   {
     glfwSetWindowShouldClose( window, true );
   }
 
-  const float cameraSpeed = 0.05f;
+  const float cameraSpeed = 2.5f;
   if( glfwGetKey( window, GLFW_KEY_W ) == GLFW_PRESS )
   {
-    cameraPos += cameraSpeed * cameraFront;
+    cameraPos += cameraSpeed * deltaTime * cameraFront;
   }
   if( glfwGetKey( window, GLFW_KEY_S ) == GLFW_PRESS )
   {
-    cameraPos -= cameraSpeed * cameraFront;
+    cameraPos -= cameraSpeed * deltaTime * cameraFront;
   }
   if( glfwGetKey( window, GLFW_KEY_A ) == GLFW_PRESS )
   {
-    cameraPos -= glm::normalize( glm::cross( cameraFront, cameraUp ) ) * cameraSpeed;
+    cameraPos -= glm::normalize( glm::cross( cameraFront, cameraUp ) ) * cameraSpeed * deltaTime;
   }
   if( glfwGetKey( window, GLFW_KEY_D ) == GLFW_PRESS )
   {
-    cameraPos += glm::normalize( glm::cross( cameraFront, cameraUp ) ) * cameraSpeed;
+    cameraPos += glm::normalize( glm::cross( cameraFront, cameraUp ) ) * cameraSpeed * deltaTime;
+  }
+}
+
+void mouseCallback( GLFWwindow* window, double xpos, double ypos )
+{
+  static float lastX = 400, lastY = 300;
+  float xoffset = ( float ) xpos - lastX;
+  float yoffset = ( float ) ypos - lastY;
+  lastX = xpos;
+  lastY = ypos;
+  const float sensitivity = 0.1f;
+  xoffset *= sensitivity;
+  yoffset *= sensitivity;
+  yaw += xoffset;
+  pitch += yoffset;
+  if( pitch > 89.0f )
+  {
+    pitch = 89.0f;
+  }
+  if( pitch < -89.0f )
+  {
+    pitch - 89.0f;
   }
 }
