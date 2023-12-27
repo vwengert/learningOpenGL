@@ -93,11 +93,11 @@ Shader::~Shader()
   }
 }
 
-void Shader::use( glm::mat4 transform ) const
+void Shader::use( glm::mat4 model, glm::mat4 view, glm::mat4 projection ) const
 {
-  GLint transformLoc = glGetUniformLocation( m_data->shaderProgram, "transform" );
-  glUniformMatrix4fv( transformLoc, 1, GL_FALSE, glm::value_ptr( transform ) );
-  assert( m_data->shaderProgram != 0 );
+  glUniformMatrix4fv( getUniformLocation( "model" ), 1, GL_FALSE, glm::value_ptr( model ) );
+  glUniformMatrix4fv( getUniformLocation( "view" ), 1, GL_FALSE, &view[ 0 ][ 0 ] );
+  glUniformMatrix4fv( getUniformLocation( "projection" ), 1, GL_FALSE, &projection[ 0 ][ 0 ] );
   glUseProgram( m_data->shaderProgram );
 }
 

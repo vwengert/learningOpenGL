@@ -83,10 +83,10 @@ void OpenGL::pollEvents()
   glfwPollEvents();
 }
 
-void OpenGL::drawVertices( glm::mat4 transform ) const
+void OpenGL::drawVertices( glm::mat4 model, glm::mat4 view, glm::mat4 projection ) const
 {
   m_data->texture->use();
-  m_data->shaderProgram->use( transform );
+  m_data->shaderProgram->use( model, view, projection );
   glBindVertexArray( m_data->VAO );
   glPolygonMode( GL_FRONT_AND_BACK, GL_FILL );
   glDrawElements( GL_TRIANGLES, 6, GL_UNSIGNED_INT, 0 );

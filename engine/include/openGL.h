@@ -23,7 +23,7 @@ class OpenGL
     static void pollEvents();
     void prepareVertices( float* vertices, long long size );
     [[maybe_unused]] void prepareIndices( unsigned int* indices, long long size );
-    void drawVertices( glm::mat4 transform ) const;
+    void drawVertices( glm::mat4 model, glm::mat4 view, glm::mat4 projection ) const;
     void processInput();
     GLFWwindow* window();
 
