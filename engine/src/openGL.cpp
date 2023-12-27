@@ -74,14 +74,6 @@ void OpenGL::prepareIndices( unsigned int* indices, long long int size )
   m_data->size = size;
 }
 
-void OpenGL::processInput()
-{
-  if( glfwGetKey( m_data->window->handle(), GLFW_KEY_ESCAPE ) == GLFW_PRESS )
-  {
-    glfwSetWindowShouldClose( m_data->window->handle(), true );
-  }
-}
-
 void OpenGL::pollEvents()
 {
   glfwPollEvents();

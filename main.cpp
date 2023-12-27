@@ -2,6 +2,12 @@
 #include <glm/gtc/matrix_transform.hpp>
 #include <openGL.h>
 
+void processInput( GLFWwindow* window );
+
+glm::vec3 cameraPos = glm::vec3( 0.0f, 0.0f, 3.0f );
+glm::vec3 cameraFront = glm::vec3( 0.0f, 0.0f, -1.0f );
+glm::vec3 cameraUp = glm::vec3( 0.0f, 1.0f, 0.0f );
+
 auto main() -> int
 {
   // TODO: change 800 and 600 with real values
@@ -57,13 +63,13 @@ auto main() -> int
 
   while( !glfwWindowShouldClose( engine.window() ) )
   {
-    engine.processInput();
+    processInput( engine.window() );
     OpenGL::setBackgroundColor( 0.2f, 0.3f, 0.3f, 1.0f );
 
     glm::mat4 view = glm::mat4( 1.0f );
     glm::mat4 projection = glm::mat4( 1.0f );
 
-    view = glm::translate( view, glm::vec3( 0.0f, 0.0f, -3.0f ) );
+    view = glm::lookAt( cameraPos, cameraPos + cameraFront, cameraUp );
     projection = glm::perspective( glm::radians( 45.0f ), ( float ) width / ( float ) height, 0.1f, 100.0f );
 
     for( unsigned int i = 0; i < 10; ++i )
@@ -80,4 +86,30 @@ auto main() -> int
   }
 
   return 0;
+}
+
+void processInput( GLFWwindow* window )
+{
+  if( glfwGetKey( window, GLFW_KEY_ESCAPE ) == GLFW_PRESS )
+  {
+    glfwSetWindowShouldClose( window, true );
+  }
+
+  const float cameraSpeed = 0.05f;
+  if( glfwGetKey( window, GLFW_KEY_W ) == GLFW_PRESS )
+  {
+    cameraPos += cameraSpeed * cameraFront;
+  }
+  if( glfwGetKey( window, GLFW_KEY_S ) == GLFW_PRESS )
+  {
+    cameraPos -= cameraSpeed * cameraFront;
+  }
+  if( glfwGetKey( window, GLFW_KEY_A ) == GLFW_PRESS )
+  {
+    cameraPos -= glm::normalize( glm::cross( cameraFront, cameraUp ) ) * cameraSpeed;
+  }
+  if( glfwGetKey( window, GLFW_KEY_D ) == GLFW_PRESS )
+  {
+    cameraPos += glm::normalize( glm::cross( cameraFront, cameraUp ) ) * cameraSpeed;
+  }
 }
