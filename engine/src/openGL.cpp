@@ -13,6 +13,7 @@ class OpenGL::PrivateData
     std::unique_ptr< Window > window;
     std::unique_ptr< Shader > shaderProgram;
     std::unique_ptr< Texture > texture;
+    unsigned int size;
 };
 
 OpenGL::OpenGL( int width, int height, const char* title )
@@ -68,6 +69,7 @@ void OpenGL::prepareIndices( unsigned int* indices, long long int size )
   glGenBuffers( 1, &m_data->EBO );
   glBindBuffer( GL_ELEMENT_ARRAY_BUFFER, m_data->EBO );
   glBufferData( GL_ELEMENT_ARRAY_BUFFER, size, indices, GL_STATIC_DRAW );
+  m_data->size = size;
 }
 
 void OpenGL::processInput()
@@ -89,7 +91,9 @@ void OpenGL::drawVertices( glm::mat4 model, glm::mat4 view, glm::mat4 projection
   m_data->shaderProgram->use( model, view, projection );
   glBindVertexArray( m_data->VAO );
   glPolygonMode( GL_FRONT_AND_BACK, GL_FILL );
-  glDrawElements( GL_TRIANGLES, 6, GL_UNSIGNED_INT, 0 );
+  glEnable( GL_DEPTH_TEST );
+  glClear( GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT );
+  glDrawElements( GL_TRIANGLES, ( GLint ) m_data->size, GL_UNSIGNED_INT, 0 );
 
   glfwSwapBuffers( m_data->window->handle() );
 }
