@@ -62,6 +62,8 @@ void OpenGL::prepareVertices( float* vertices, long long size )
 
   glVertexAttribPointer( 2, 2, GL_FLOAT, GL_FALSE, 8 * sizeof( float ), ( void* ) ( 6 * sizeof( float ) ) );
   glEnableVertexAttribArray( 2 );
+
+  glEnable( GL_DEPTH_TEST );
 }
 
 void OpenGL::prepareIndices( unsigned int* indices, long long int size )
@@ -91,11 +93,7 @@ void OpenGL::drawVertices( glm::mat4 model, glm::mat4 view, glm::mat4 projection
   m_data->shaderProgram->use( model, view, projection );
   glBindVertexArray( m_data->VAO );
   glPolygonMode( GL_FRONT_AND_BACK, GL_FILL );
-  glEnable( GL_DEPTH_TEST );
-  glClear( GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT );
   glDrawElements( GL_TRIANGLES, ( GLint ) m_data->size, GL_UNSIGNED_INT, 0 );
-
-  glfwSwapBuffers( m_data->window->handle() );
 }
 
 void OpenGL::createShader( const char* vertexPath, const char* fragmentPath )
@@ -106,4 +104,9 @@ void OpenGL::createShader( const char* vertexPath, const char* fragmentPath )
 void OpenGL::createTexture( const char* texturePath )
 {
   m_data->texture = std::make_unique< Texture >( texturePath );
+}
+void OpenGL::swapBuffers()
+{
+  glfwSwapBuffers( m_data->window->handle() );
+  glClear( GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT );
 }

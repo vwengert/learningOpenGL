@@ -25,6 +25,7 @@ class OpenGL
     [[maybe_unused]] void prepareIndices( unsigned int* indices, long long size );
     void drawVertices( glm::mat4 model, glm::mat4 view, glm::mat4 projection ) const;
     void processInput();
+    void swapBuffers();
     GLFWwindow* window();
 
   private:
