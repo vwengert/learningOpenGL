@@ -11,8 +11,17 @@ list(APPEND Library_SOURCES
         src/texture.cpp
 )
 
+list(APPEND Library_HEADER
+        include/openGL.h
+        include/shader.h
+        include/stb_image.h
+        include/texture.h
+        include/window.h
+)
+
 add_library(${PROJECT_NAME} STATIC
-        ${Library_SOURCES}
+    ${Library_SOURCES}
+    ${Library_HEADER}
 )
 
 target_include_directories(${PROJECT_NAME} PUBLIC
