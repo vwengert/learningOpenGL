@@ -29,11 +29,8 @@ message(STATUS "Build type: ${CMAKE_BUILD_TYPE}")
 add_executable(${PROJECT_NAME} main.cpp)
 
 FetchContent_MakeAvailable(
-        glfw)
-
-FetchContent_MakeAvailable(
+        glfw
         glm)
-
 
 set(LINK_LIBRARY
         engine
