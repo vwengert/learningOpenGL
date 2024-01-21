@@ -20,7 +20,7 @@ auto main() -> int
   constexpr int width = 800;
   constexpr int height = 600;
   OpenGL engine( width, height, "modern C++" );
-  engine.createShader( "resource/vertex.shader", "resource/fragment.shader" );
+  engine.createShader( "resource/cubes.vert", "resource/cubes.frag" );
   engine.createTexture( "resource/pfote.jpg" );
 
   // clang-format off
