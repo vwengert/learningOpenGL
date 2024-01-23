@@ -1,6 +1,5 @@
 #include "shader.h"
 
-#include <cassert>
 #include <fstream>
 #include <glm/gtc/type_ptr.hpp>
 #include <iostream>

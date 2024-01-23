@@ -16,7 +16,7 @@ class Window::PrivateData
     GLFWwindow* window{ nullptr };
 };
 
-Window::Window( int width, int height, const char* title, GLFWmonitor* monitor, GLFWwindow* share )
+Window::Window( int width, int height, const char* title, GLFWmonitor*, GLFWwindow* )
   : m_data( new PrivateData() )
 {
   glfwInit();

@@ -25,29 +25,20 @@ auto main() -> int
 
   // clang-format off
   float vertices[] = {
-     0.5f,  0.5f, 0.5f,     1.0f, 0.0f, 0.0f,     1.0f, 0.0f,
-     0.5f, -0.5f, 0.5f,     0.0f, 1.0f, 0.0f,     1.0f, 1.0f,
-    -0.5f, -0.5f, 0.5f,     0.0f, 0.0f, 1.0f,     0.0f, 1.0f,
-    -0.5f,  0.5f, 0.5f,     1.0f, 1.0f, 0.0f,     0.0f, 0.0f,
-     0.5f,  0.5f, -0.5f,     1.0f, 0.0f, 0.0f,     1.0f, 0.0f,
-     0.5f, -0.5f, -0.5f,     0.0f, 1.0f, 0.0f,     1.0f, 1.0f,
-    -0.5f, -0.5f, -0.5f,     0.0f, 0.0f, 1.0f,     0.0f, 1.0f,
-    -0.5f,  0.5f, -0.5f,     1.0f, 1.0f, 0.0f,     0.0f, 0.0f
+    -0.5f, -0.5f, -0.5f,     0.0f, 0.0f, 0.0f,     1.0f, 0.0f,
+    -0.5f, -0.5f, 0.5f,     0.0f, 0.0f, 0.0f,     1.0f, 0.0f,
+    -0.5f, 0.5f, -0.5f,     0.0f, 1.0f, 0.0f,     1.0f, 1.0f,
+    -0.5f, 0.5f, 0.5f,     0.0f, 1.0f, 0.0f,     1.0f, 1.0f,
+    0.5f, -0.5f, -0.5f,     1.0f, 0.0f, 0.0f,     0.0f, 0.0f,
+    0.5f, -0.5f, 0.5f,     1.0f, 0.0f, 0.0f,     0.0f, 0.0f,
+    0.5f, 0.5f, -0.5f,     1.0f, 1.0f, 0.0f,     0.0f, 1.0f,
+    0.5f, 0.5f, 0.5f,     1.0f, 1.0f, 0.0f,     0.0f, 1.0f
 };
 
   unsigned int indices[] = {
-      0, 1, 3,
-      1, 2, 3,
-      0, 3, 7,
-      0, 4, 7,
-      1, 2, 6,
-      1, 5, 6,
-      4, 5, 6,
-      4, 7, 6,
-      0, 4, 5,
-      0, 1, 5,
-      3, 7, 6,
-      3, 2, 6,
+      0, 1, 2, 3, 6, 7, 4, 5,
+      0xFFFF,
+      2, 6, 0, 4, 1, 5, 3, 7
   };
 
   glm::vec3 cubePositions[] = {
@@ -134,7 +125,7 @@ void processInput( GLFWwindow* window )
   }
 }
 
-void mouseCallback( GLFWwindow* window, double xPos, double yPos )
+void mouseCallback( GLFWwindow*, double xPos, double yPos )
 {
   static float lastX, lastY;
   if( firstMouse )
@@ -159,11 +150,11 @@ void mouseCallback( GLFWwindow* window, double xPos, double yPos )
   }
   if( pitch < -89.0f )
   {
-    pitch - 89.0f;
+    pitch = -89.0f;
   }
 }
 
-void scrollCallback( GLFWwindow* window, double xOffset, double yOffset )
+void scrollCallback( GLFWwindow*, double, double yOffset )
 {
   zoom -= ( float ) yOffset;
   if( zoom < 1.0f )

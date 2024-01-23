@@ -13,7 +13,7 @@ class OpenGL::PrivateData
     std::unique_ptr< Window > window;
     std::unique_ptr< Shader > shaderProgram;
     std::unique_ptr< Texture > texture;
-    unsigned int size;
+    unsigned int size{ 0 };
 };
 
 OpenGL::OpenGL( int width, int height, const char* title )
@@ -54,7 +54,7 @@ void OpenGL::prepareVertices( float* vertices, long long size )
   glBindBuffer( GL_ELEMENT_ARRAY_BUFFER, m_data->EBO );
   glBufferData( GL_ELEMENT_ARRAY_BUFFER, size, vertices, GL_STATIC_DRAW );
 
-  glVertexAttribPointer( 0, 3, GL_FLOAT, GL_FALSE, 8 * sizeof( float ), ( void* ) 0 );
+  glVertexAttribPointer( 0, 3, GL_FLOAT, GL_FALSE, 8 * sizeof( float ), ( void* ) nullptr );
   glEnableVertexAttribArray( 0 );
 
   glVertexAttribPointer( 1, 3, GL_FLOAT, GL_FALSE, 8 * sizeof( float ), ( void* ) ( 3 * sizeof( float ) ) );
@@ -84,8 +84,10 @@ void OpenGL::drawVertices( glm::mat4 model, glm::mat4 view, glm::mat4 projection
   m_data->texture->use();
   m_data->shaderProgram->use( model, view, projection );
   glBindVertexArray( m_data->VAO );
+  glEnable( GL_PRIMITIVE_RESTART );
+  glPrimitiveRestartIndex( 0xFFFF );
   glPolygonMode( GL_FRONT_AND_BACK, GL_FILL );
-  glDrawElements( GL_TRIANGLES, ( GLint ) m_data->size, GL_UNSIGNED_INT, 0 );
+  glDrawElements( GL_TRIANGLE_STRIP, ( GLint ) m_data->size, GL_UNSIGNED_INT, nullptr );
 }
 
 void OpenGL::createShader( const char* vertexPath, const char* fragmentPath )
