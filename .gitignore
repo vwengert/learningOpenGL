@@ -1,6 +1,9 @@
-/cmake-build-debug/
+/.cache
 /.idea/
-/build/
-CMakeLists.txt.user
 /.vs
+/build/
+/cmake-build-debug/
+/Debug
 /out
+CMakeLists.txt.user
+compile_commands.json
