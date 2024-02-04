@@ -1,7 +1,7 @@
 #include <glm/glm.hpp>
 #include <glm/gtc/matrix_transform.hpp>
 #include <memory>
-#include <openGL.h>
+#include <oglObject.h>
 #include <shader.h>
 #include <texture.h>
 #include <window.h>
@@ -16,22 +16,13 @@ glm::vec3 cameraUp = glm::vec3( 0.0f, 1.0f, 0.0f );
 float yaw = 90.0f;
 float pitch = 0.0f;
 float zoom = 35.0f;
+constexpr int width = 800;
+constexpr int height = 600;
+const char* title = "modern C++";
+
 bool firstMouse = true;
 
-auto main() -> int
-{
-  // TODO: change 800 and 600 with real values
-  constexpr int width = 800;
-  constexpr int height = 600;
-  const char* title = "modern C++";
-  const auto window = std::make_shared< Window >( width, height, title, nullptr, nullptr );
-  const auto shader = std::make_shared< Shader >( "resource/cubes.vert", "resource/cubes.frag" );
-  const auto texture = std::make_shared< Texture >( "resource/pfote.jpg" );
-  OpenGL engine( window );
-  engine.setShader( shader );
-  engine.setTexture( texture );
-
-  // clang-format off
+// clang-format off
   float vertices[] = {
     -0.5f, -0.5f, -0.5f,     0.0f, 0.0f, 0.0f,     1.0f, 0.0f,
     -0.5f, -0.5f, 0.5f,     0.0f, 0.0f, 0.0f,     1.0f, 0.0f,
@@ -61,18 +52,29 @@ auto main() -> int
       glm::vec3( 1.5f, 0.2f, -1.5f),
       glm::vec3(-1.3f, 1.0f, -1.5f)
   };
-  // clang-format on
+// clang-format on
 
-  engine.prepareVertices( vertices, sizeof vertices );
-  engine.prepareIndices( indices, sizeof indices );
-  glfwSetInputMode( engine.window(), GLFW_CURSOR, GLFW_CURSOR_DISABLED );
-  glfwSetCursorPosCallback( engine.window(), mouseCallback );
-  glfwSetScrollCallback( engine.window(), scrollCallback );
+auto main() -> int
+{
+  const auto window = std::make_shared< Window >( width, height, title, nullptr, nullptr );
+  const auto shader = std::make_shared< Shader >( "resource/cubes.vert", "resource/cubes.frag" );
+  const auto texture = std::make_shared< Texture >( "resource/pfote.jpg" );
 
-  while( !glfwWindowShouldClose( engine.window() ) )
+  OglObject object( window );
+  object.setShader( shader );
+  object.setTexture( texture );
+  object.prepareVertices( vertices, sizeof vertices );
+  object.prepareIndices( indices, sizeof indices );
+
+  glfwSetInputMode( object.window(), GLFW_CURSOR, GLFW_CURSOR_DISABLED );
+  glfwSetCursorPosCallback( object.window(), mouseCallback );
+  glfwSetScrollCallback( object.window(), scrollCallback );
+
+  while( !glfwWindowShouldClose( object.window() ) )
   {
-    processInput( engine.window() );
-    OpenGL::setBackgroundColor( 0.2f, 0.3f, 0.3f, 1.0f );
+    processInput( object.window() );
+    glClearColor( 0.2f, 0.3f, 0.3f, 1.0f );
+    glClear( GL_COLOR_BUFFER_BIT );
 
     glm::mat4 view = glm::mat4( 1.0f );
     glm::mat4 projection = glm::mat4( 1.0f );
@@ -92,11 +94,12 @@ auto main() -> int
       model = glm::translate( model, cubePositions[ i ] );
       float angle = 11.1f * ( float ) ( i + 1 );
       model = glm::rotate( model, glm::radians( angle * ( float ) glfwGetTime() ), glm::vec3( 1.0f, 0.3f, 0.5f ) );
-      engine.drawVertices( model, view, projection );
+      object.drawVertices( model, view, projection );
     }
 
-    engine.swapBuffers();
-    OpenGL::pollEvents();
+    glfwSwapBuffers( window->handle() );
+    glClear( GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT );
+    glfwPollEvents();
   }
 
   return 0;

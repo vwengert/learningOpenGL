@@ -1,10 +1,10 @@
-#include "openGL.h"
+#include "oglObject.h"
 
 #include "shader.h"
 #include "texture.h"
 #include "window.h"
 
-class OpenGL::PrivateData
+class OglObject::PrivateData
 {
   public:
     unsigned int VAO{ 0 };
@@ -16,31 +16,25 @@ class OpenGL::PrivateData
     unsigned int size{ 0 };
 };
 
-OpenGL::OpenGL( const std::shared_ptr< Window >& window )
+OglObject::OglObject( const std::shared_ptr< Window >& window )
   : m_data( new PrivateData() )
 {
   m_data->window = window;
 }
 
-OpenGL::~OpenGL()
+OglObject::~OglObject()
 {
   glDeleteVertexArrays( 1, &m_data->VAO );
   glDeleteBuffers( 1, &m_data->VBO );
   glDeleteBuffers( 1, &m_data->EBO );
 }
 
-GLFWwindow* OpenGL::window()
+GLFWwindow* OglObject::window()
 {
   return m_data->window->handle();
 }
 
-void OpenGL::setBackgroundColor( GLfloat red, GLfloat green, GLfloat blue, GLfloat alpha )
-{
-  glClearColor( red, green, blue, alpha );
-  glClear( GL_COLOR_BUFFER_BIT );
-}
-
-void OpenGL::prepareVertices( float* vertices, long long size )
+void OglObject::prepareVertices( float* vertices, long long size )
 {
   assert( m_data->window );
   glGenVertexArrays( 1, &m_data->VAO );
@@ -67,7 +61,7 @@ void OpenGL::prepareVertices( float* vertices, long long size )
   glEnable( GL_DEPTH_TEST );
 }
 
-void OpenGL::prepareIndices( unsigned int* indices, long long int size )
+void OglObject::prepareIndices( unsigned int* indices, long long int size )
 {
   assert( m_data->window );
   glGenBuffers( 1, &m_data->EBO );
@@ -76,12 +70,7 @@ void OpenGL::prepareIndices( unsigned int* indices, long long int size )
   m_data->size = size;
 }
 
-void OpenGL::pollEvents()
-{
-  glfwPollEvents();
-}
-
-void OpenGL::drawVertices( glm::mat4 model, glm::mat4 view, glm::mat4 projection ) const
+void OglObject::drawVertices( glm::mat4 model, glm::mat4 view, glm::mat4 projection ) const
 {
   assert( m_data->window );
   assert( m_data->shaderProgram );
@@ -95,19 +84,12 @@ void OpenGL::drawVertices( glm::mat4 model, glm::mat4 view, glm::mat4 projection
   glDrawElements( GL_TRIANGLE_STRIP, ( GLint ) m_data->size, GL_UNSIGNED_INT, nullptr );
 }
 
-void OpenGL::setShader( std::shared_ptr< Shader > shader )
+void OglObject::setShader( std::shared_ptr< Shader > shader )
 {
   m_data->shaderProgram = shader;
 }
 
-void OpenGL::setTexture( std::shared_ptr< Texture > texture )
+void OglObject::setTexture( std::shared_ptr< Texture > texture )
 {
   m_data->texture = texture;
-}
-
-void OpenGL::swapBuffers()
-{
-  assert( m_data->window );
-  glfwSwapBuffers( m_data->window->handle() );
-  glClear( GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT );
 }

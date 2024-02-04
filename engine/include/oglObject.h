@@ -13,20 +13,17 @@ class Window;
 class Shader;
 class Texture;
 
-class OpenGL
+class OglObject
 {
   public:
-    explicit OpenGL( const std::shared_ptr< Window >& window );
-    ~OpenGL();
+    explicit OglObject( const std::shared_ptr< Window >& window );
+    ~OglObject();
 
     void setShader( std::shared_ptr< Shader > shader );
     void setTexture( std::shared_ptr< Texture > texture );
-    static void setBackgroundColor( GLfloat red, GLfloat green, GLfloat blue, GLfloat alpha );
-    static void pollEvents();
     void prepareVertices( float* vertices, long long size );
     [[maybe_unused]] void prepareIndices( unsigned int* indices, long long size );
     void drawVertices( glm::mat4 model, glm::mat4 view, glm::mat4 projection ) const;
-    void swapBuffers();
     GLFWwindow* window();
 
   private:

@@ -5,14 +5,14 @@ set(CMAKE_CXX_STANDARD_REQUIRED ON)
 set(CMAKE_EXTENSIONS OFF)
 
 list(APPEND Library_SOURCES
-        src/openGL.cpp
+        src/oglObject.cpp
         src/shader.cpp
         src/window.cpp
         src/texture.cpp
 )
 
 list(APPEND Library_HEADER
-        include/openGL.h
+        include/oglObject.h
         include/shader.h
         include/stb_image.h
         include/texture.h
