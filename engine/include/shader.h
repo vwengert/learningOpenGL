@@ -10,7 +10,10 @@ class Shader
 {
   public:
     explicit Shader( const char* vertexPath, const char* fragmentPath );
+    Shader();
     ~Shader();
+    void addShader( unsigned int type, const char* shaderPath ) const;
+    void createShaderProgram() const;
 
     void use( glm::mat4 model, glm::mat4 view, glm::mat4 projection ) const;
     [[maybe_unused]] void setBool( const std::string& name, bool value ) const;

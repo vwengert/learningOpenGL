@@ -3,7 +3,9 @@
 #include <fstream>
 #include <glm/gtc/type_ptr.hpp>
 #include <iostream>
+#include <map>
 #include <sstream>
+#include <vector>
 
 namespace
 {
@@ -20,8 +22,8 @@ namespace
     }
     catch( std::ifstream::failure& e )
     {
-      std::cout << shaderPath << '\n';
-      std::cout << "ERROR::SHADER::FILE_NOT_SUCCESSFULLY_READ" << std::endl;
+      std::cerr << shaderPath << '\n';
+      std::cerr << "ERROR::SHADER::FILE_NOT_SUCCESSFULLY_READ" << std::endl;
     }
     return shaderStream.str();
   }
@@ -39,17 +41,19 @@ namespace
     if( !success )
     {
       glGetShaderInfoLog( vertexShader, 512, nullptr, infoLog );
-      std::cout << "ERROR::SHADER::COMPILATION_FAILED\n" << infoLog << std::endl;
+      std::cerr << "ERROR::SHADER::COMPILATION_FAILED\n" << infoLog << std::endl;
       throw;
     }
     return vertexShader;
   }
 
-  unsigned int createShaderProgram( unsigned int vertexShader, unsigned int fragmentShader )
+  unsigned int createProgram( const std::vector< unsigned int >& shaders )
   {
     auto ID = glCreateProgram();
-    glAttachShader( ID, vertexShader );
-    glAttachShader( ID, fragmentShader );
+    for( auto shader : shaders )
+    {
+      glAttachShader( ID, shader );
+    }
 
     glLinkProgram( ID );
 
@@ -59,12 +63,14 @@ namespace
     if( !success )
     {
       glGetProgramInfoLog( ID, 512, nullptr, infoLog );
-      std::cout << "ERROR::SHADER::PROGRAM::LINK_FAILED\n" << infoLog << std::endl;
+      std::cerr << "ERROR::SHADER::PROGRAM::LINK_FAILED\n" << infoLog << std::endl;
       throw;
     }
 
-    glDeleteShader( vertexShader );
-    glDeleteShader( fragmentShader );
+    for( auto shader : shaders )
+    {
+      glDeleteShader( shader );
+    }
 
     return ID;
   }
@@ -74,14 +80,20 @@ class Shader::PrivateData
 {
   public:
     unsigned int shaderProgram = 0;
+    std::map< unsigned int, std::string > shaders;
 };
 
-Shader::Shader( const char* vertexPath, const char* fragmentPath )
+Shader::Shader()
   : m_data{ new PrivateData() }
 {
-  m_data->shaderProgram =
-    createShaderProgram( createAndCompileShader( readShaderCode( vertexPath ).c_str(), GL_VERTEX_SHADER ),
-      createAndCompileShader( readShaderCode( fragmentPath ).c_str(), GL_FRAGMENT_SHADER ) );
+}
+
+Shader::Shader( const char* vertexPath, const char* fragmentPath )
+  : Shader()
+{
+  addShader( GL_VERTEX_SHADER, vertexPath );
+  addShader( GL_FRAGMENT_SHADER, fragmentPath );
+  createShaderProgram();
 }
 
 Shader::~Shader()
@@ -92,8 +104,39 @@ Shader::~Shader()
   }
 }
 
+void Shader::addShader( unsigned int type, const char* shaderPath ) const
+{
+  m_data->shaders[ type ] = readShaderCode( shaderPath );
+}
+
+void Shader::createShaderProgram() const
+{
+  if( m_data->shaderProgram > 0 )
+  {
+    std::cerr << "Program already compiled" << std::endl;
+    return;
+  }
+  if( m_data->shaders.find( GL_VERTEX_SHADER ) == m_data->shaders.end() )
+  {
+    std::cerr << "Minimum Vertex Shader is missing" << std::endl;
+  }
+
+  std::vector< unsigned int > shaders;
+
+  for( const auto& shader : m_data->shaders )
+  {
+    shaders.push_back( createAndCompileShader( shader.second.c_str(), shader.first ) );
+  }
+
+  m_data->shaderProgram = createProgram( shaders );
+}
+
 void Shader::use( glm::mat4 model, glm::mat4 view, glm::mat4 projection ) const
 {
+  if( m_data->shaderProgram == 0 )
+  {
+    createShaderProgram();
+  }
   glUniformMatrix4fv( getUniformLocation( "model" ), 1, GL_FALSE, glm::value_ptr( model ) );
   glUniformMatrix4fv( getUniformLocation( "view" ), 1, GL_FALSE, &view[ 0 ][ 0 ] );
   glUniformMatrix4fv( getUniformLocation( "projection" ), 1, GL_FALSE, &projection[ 0 ][ 0 ] );
