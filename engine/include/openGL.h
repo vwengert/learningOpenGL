@@ -7,10 +7,11 @@
 
 #include <glm/glm.hpp>
 #include <memory>
-#include <vector>
 
 class GLFWwindow;
 class Window;
+class Shader;
+class Texture;
 
 class OpenGL
 {
@@ -18,8 +19,8 @@ class OpenGL
     explicit OpenGL( const std::shared_ptr< Window >& window );
     ~OpenGL();
 
-    void createShader( const char* vertexShaderSource, const char* fragmentShaderSource );
-    void createTexture( const char* texturePath );
+    void setShader( std::shared_ptr< Shader > shader );
+    void setTexture( std::shared_ptr< Texture > texture );
     static void setBackgroundColor( GLfloat red, GLfloat green, GLfloat blue, GLfloat alpha );
     static void pollEvents();
     void prepareVertices( float* vertices, long long size );

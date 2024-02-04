@@ -3,7 +3,6 @@
 #include "shader.h"
 #include "texture.h"
 #include "window.h"
-#include <utility>
 
 class OpenGL::PrivateData
 {
@@ -11,9 +10,9 @@ class OpenGL::PrivateData
     unsigned int VAO{ 0 };
     unsigned int VBO{ 0 };
     unsigned int EBO{ 0 };
-    std::shared_ptr< Window > window;
-    std::unique_ptr< Shader > shaderProgram;
-    std::unique_ptr< Texture > texture;
+    std::shared_ptr< Window > window{ nullptr };
+    std::shared_ptr< Shader > shaderProgram{ nullptr };
+    std::shared_ptr< Texture > texture{ nullptr };
     unsigned int size{ 0 };
 };
 
@@ -85,6 +84,8 @@ void OpenGL::pollEvents()
 void OpenGL::drawVertices( glm::mat4 model, glm::mat4 view, glm::mat4 projection ) const
 {
   assert( m_data->window );
+  assert( m_data->shaderProgram );
+  assert( m_data->texture );
   m_data->texture->use();
   m_data->shaderProgram->use( model, view, projection );
   glBindVertexArray( m_data->VAO );
@@ -94,17 +95,16 @@ void OpenGL::drawVertices( glm::mat4 model, glm::mat4 view, glm::mat4 projection
   glDrawElements( GL_TRIANGLE_STRIP, ( GLint ) m_data->size, GL_UNSIGNED_INT, nullptr );
 }
 
-void OpenGL::createShader( const char* vertexPath, const char* fragmentPath )
+void OpenGL::setShader( std::shared_ptr< Shader > shader )
 {
-  assert( m_data->window );
-  m_data->shaderProgram = std::make_unique< Shader >( vertexPath, fragmentPath );
+  m_data->shaderProgram = shader;
 }
 
-void OpenGL::createTexture( const char* texturePath )
+void OpenGL::setTexture( std::shared_ptr< Texture > texture )
 {
-  assert( m_data->window );
-  m_data->texture = std::make_unique< Texture >( texturePath );
+  m_data->texture = texture;
 }
+
 void OpenGL::swapBuffers()
 {
   assert( m_data->window );

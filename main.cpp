@@ -2,6 +2,8 @@
 #include <glm/gtc/matrix_transform.hpp>
 #include <memory>
 #include <openGL.h>
+#include <shader.h>
+#include <texture.h>
 #include <window.h>
 
 void processInput( GLFWwindow* window );
@@ -23,9 +25,11 @@ auto main() -> int
   constexpr int height = 600;
   const char* title = "modern C++";
   const auto window = std::make_shared< Window >( width, height, title, nullptr, nullptr );
+  const auto shader = std::make_shared< Shader >( "resource/cubes.vert", "resource/cubes.frag" );
+  const auto texture = std::make_shared< Texture >( "resource/pfote.jpg" );
   OpenGL engine( window );
-  engine.createShader( "resource/cubes.vert", "resource/cubes.frag" );
-  engine.createTexture( "resource/pfote.jpg" );
+  engine.setShader( shader );
+  engine.setTexture( texture );
 
   // clang-format off
   float vertices[] = {
