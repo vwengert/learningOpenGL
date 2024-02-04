@@ -10,11 +10,12 @@
 #include <vector>
 
 class GLFWwindow;
+class Window;
 
 class OpenGL
 {
   public:
-    OpenGL( int width, int height, const char* title );
+    explicit OpenGL( const std::shared_ptr< Window >& window );
     ~OpenGL();
 
     void createShader( const char* vertexShaderSource, const char* fragmentShaderSource );

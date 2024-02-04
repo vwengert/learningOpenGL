@@ -1,6 +1,8 @@
 #include <glm/glm.hpp>
 #include <glm/gtc/matrix_transform.hpp>
+#include <memory>
 #include <openGL.h>
+#include <window.h>
 
 void processInput( GLFWwindow* window );
 void mouseCallback( GLFWwindow* window, double xPos, double yPos );
@@ -19,7 +21,9 @@ auto main() -> int
   // TODO: change 800 and 600 with real values
   constexpr int width = 800;
   constexpr int height = 600;
-  OpenGL engine( width, height, "modern C++" );
+  const char* title = "modern C++";
+  const auto window = std::make_shared< Window >( width, height, title, nullptr, nullptr );
+  OpenGL engine( window );
   engine.createShader( "resource/cubes.vert", "resource/cubes.frag" );
   engine.createTexture( "resource/pfote.jpg" );
 

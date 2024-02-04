@@ -1,7 +1,9 @@
 #include "openGL.h"
+
 #include "shader.h"
 #include "texture.h"
 #include "window.h"
+#include <utility>
 
 class OpenGL::PrivateData
 {
@@ -9,16 +11,16 @@ class OpenGL::PrivateData
     unsigned int VAO{ 0 };
     unsigned int VBO{ 0 };
     unsigned int EBO{ 0 };
-    std::unique_ptr< Window > window;
+    std::shared_ptr< Window > window;
     std::unique_ptr< Shader > shaderProgram;
     std::unique_ptr< Texture > texture;
     unsigned int size{ 0 };
 };
 
-OpenGL::OpenGL( int width, int height, const char* title )
+OpenGL::OpenGL( const std::shared_ptr< Window >& window )
   : m_data( new PrivateData() )
 {
-  m_data->window = std::make_unique< Window >( width, height, title, nullptr, nullptr );
+  m_data->window = window;
 }
 
 OpenGL::~OpenGL()
@@ -41,6 +43,7 @@ void OpenGL::setBackgroundColor( GLfloat red, GLfloat green, GLfloat blue, GLflo
 
 void OpenGL::prepareVertices( float* vertices, long long size )
 {
+  assert( m_data->window );
   glGenVertexArrays( 1, &m_data->VAO );
   glGenBuffers( 1, &m_data->VBO );
   glGenBuffers( 1, &m_data->EBO );
@@ -67,6 +70,7 @@ void OpenGL::prepareVertices( float* vertices, long long size )
 
 void OpenGL::prepareIndices( unsigned int* indices, long long int size )
 {
+  assert( m_data->window );
   glGenBuffers( 1, &m_data->EBO );
   glBindBuffer( GL_ELEMENT_ARRAY_BUFFER, m_data->EBO );
   glBufferData( GL_ELEMENT_ARRAY_BUFFER, size, indices, GL_STATIC_DRAW );
@@ -80,6 +84,7 @@ void OpenGL::pollEvents()
 
 void OpenGL::drawVertices( glm::mat4 model, glm::mat4 view, glm::mat4 projection ) const
 {
+  assert( m_data->window );
   m_data->texture->use();
   m_data->shaderProgram->use( model, view, projection );
   glBindVertexArray( m_data->VAO );
@@ -91,15 +96,18 @@ void OpenGL::drawVertices( glm::mat4 model, glm::mat4 view, glm::mat4 projection
 
 void OpenGL::createShader( const char* vertexPath, const char* fragmentPath )
 {
+  assert( m_data->window );
   m_data->shaderProgram = std::make_unique< Shader >( vertexPath, fragmentPath );
 }
 
 void OpenGL::createTexture( const char* texturePath )
 {
+  assert( m_data->window );
   m_data->texture = std::make_unique< Texture >( texturePath );
 }
 void OpenGL::swapBuffers()
 {
+  assert( m_data->window );
   glfwSwapBuffers( m_data->window->handle() );
   glClear( GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT );
 }
