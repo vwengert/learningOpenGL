@@ -1,5 +1,6 @@
 #include <glm/glm.hpp>
 #include <glm/gtc/matrix_transform.hpp>
+#include <iostream>
 #include <memory>
 #include <openGL.h>
 #include <window.h>
@@ -8,10 +9,10 @@ void processInput( GLFWwindow* window );
 void mouseCallback( GLFWwindow* window, double xPos, double yPos );
 void scrollCallback( GLFWwindow* window, double xOffset, double yOffset );
 
-glm::vec3 cameraPos = glm::vec3( 0.0f, 0.0f, 3.0f );
-glm::vec3 cameraFront = glm::vec3( 0.0f, 0.0f, -1.0f );
+glm::vec3 cameraPos = glm::vec3( 0.0f, 0.0f, -35.0f );
+glm::vec3 cameraFront = glm::vec3( 0.0f, 0.0f, 1.0f );
 glm::vec3 cameraUp = glm::vec3( 0.0f, 1.0f, 0.0f );
-float yaw = 0.0f;
+float yaw = 90.0f;
 float pitch = 0.0f;
 float zoom = 35.0f;
 bool firstMouse = true;
